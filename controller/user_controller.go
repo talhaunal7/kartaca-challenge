@@ -53,8 +53,8 @@ func (uc *UserController) Login(ctx *gin.Context) {
 }
 
 func (uc *UserController) Logout(ctx *gin.Context) {
-	_, _, claims := middleware.ParseToken(ctx)
-	userId := claims["sub"]
+
+	userId, _ := ctx.Get("id")
 	err := uc.UserService.Logout(fmt.Sprintf("%v", userId))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

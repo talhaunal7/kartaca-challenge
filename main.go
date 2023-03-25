@@ -16,13 +16,15 @@ import (
 )
 
 var (
-	server         *gin.Engine
-	userService    service.UserService
-	redisService   service.RedisService
-	userController controller.UserController
-	ctx            context.Context
-	db             *gorm.DB
-	err            error
+	server            *gin.Engine
+	userService       service.UserService
+	redisService      service.RedisService
+	userController    controller.UserController
+	productService    service.ProductService
+	productController controller.ProductController
+	ctx               context.Context
+	db                *gorm.DB
+	err               error
 )
 
 func init() {
@@ -43,7 +45,7 @@ func init() {
 		fmt.Println(err)
 		panic("failed to connect to DB")
 	}
-	err = db.AutoMigrate(&entity.User{})
+	err = db.AutoMigrate(&entity.User{}, &entity.Product{})
 	if err != nil {
 		panic("failed to migrate the DB")
 	}
@@ -51,6 +53,8 @@ func init() {
 	redisService = service.NewRedisService(rdb, ctx)
 	userService = service.NewUserService(db, redisService)
 	userController = controller.NewUserController(userService, redisService)
+	productService = service.NewProductService(db)
+	productController = controller.NewProductController(productService, redisService)
 	server = gin.Default()
 
 }
@@ -58,6 +62,7 @@ func main() {
 
 	basepath := server.Group("/v1")
 	userController.RegisterUserRoutes(basepath)
+	productController.RegisterProductRoutes(basepath)
 	log.Fatal(server.Run(":3000"))
 
 }
