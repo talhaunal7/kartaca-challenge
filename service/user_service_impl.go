@@ -58,7 +58,7 @@ func (u *UserServiceImpl) Login(userLoginRequest *model.UserLogin) (*string, err
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
-		"exp": time.Now().Add(time.Minute * 2).Unix(),
+		"exp": time.Now().Add(time.Minute * 5).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))

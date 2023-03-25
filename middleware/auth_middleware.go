@@ -14,7 +14,17 @@ import (
 func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
-		tokenString = strings.Split(tokenString, " ")[1]
+
+		if tokenString == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+			return
+		}
+		if !strings.HasPrefix(tokenString, "Bearer ") {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token format"})
+			return
+		}
+		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -23,20 +33,24 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 			return []byte(os.Getenv("SECRET")), nil
 		})
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if ok && token.Valid {
-			if float64(time.Now().Unix()) > claims["exp"].(float64) {
-				c.AbortWithStatus(http.StatusUnauthorized)
+			if exp, ok := claims["exp"].(float64); ok && float64(time.Now().Unix()) > exp {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token is expired"})
+				return
 			}
-		}
 
+		}
 		userId := claims["sub"]
 		redisToken, err := redis.Get(fmt.Sprintf("%v", userId))
-		if err != nil || *redisToken != tokenString {
-			c.AbortWithStatus(http.StatusUnauthorized)
+
+		if redisToken == nil || *redisToken != tokenString || err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			return
 		}
 
 		c.Set("id", userId)
@@ -44,4 +58,3 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 
 	}
 }
-
