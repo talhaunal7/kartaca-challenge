@@ -6,6 +6,7 @@ import (
 	"example.com/auction-api/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -24,12 +25,14 @@ func NewUserController(userService service.UserService, redisService service.Red
 func (uc *UserController) Register(ctx *gin.Context) {
 	var user model.UserRegister
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		log.Printf(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
 	err := uc.UserService.Register(&user)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
+		log.Printf(err.Error())
+		ctx.JSON(http.StatusConflict, gin.H{"error": "user already exists"})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "successfully registered"})
@@ -37,19 +40,28 @@ func (uc *UserController) Register(ctx *gin.Context) {
 }
 
 func (uc *UserController) Login(ctx *gin.Context) {
+	//fmt.Printf("%s %s\n", ctx.Request.Body, ctx.Request.Header)
+	fmt.Println("-------------")
+	fmt.Printf("%s %s\n", ctx.Request.Body, ctx.Request.Header)
+	fmt.Println("-------------")
 	var user model.UserLogin
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		log.Printf(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
+	// FE response için user info dön ?
 	token, err := uc.UserService.Login(&user)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		log.Printf(err.Error())
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "incorrect email or password"})
 		return
 	}
-
-	ctx.Header("Authorization", "Bearer "+*token)
-	ctx.JSON(http.StatusOK, gin.H{"message": "Logged in"})
+	//ctx.SetSameSite(http.SameSiteLaxMode)
+	tokenString := "Bearer " + *token
+	ctx.SetCookie("access_token", tokenString, 3600*24*30, "", "", false /*because on localhost for now*/, true)
+	//ctx.Header("authorization", "Bearer "+*token)
+	ctx.JSON(http.StatusOK, gin.H{"username": "ali"})
 }
 
 func (uc *UserController) Logout(ctx *gin.Context) {

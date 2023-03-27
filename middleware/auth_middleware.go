@@ -13,7 +13,8 @@ import (
 
 func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
+		//tokenString := c.GetHeader("Authorization")
+		tokenString, err := c.Cookie("access_token")
 
 		if tokenString == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})

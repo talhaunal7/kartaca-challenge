@@ -47,6 +47,9 @@ func (prd *ProductServiceImpl) Offer(productOfferReq *model.ProductOffer, userId
 	if err != nil {
 		return err
 	}
+	if int(product.OfferPrice) > productOfferReq.OfferPrice {
+		return errors.New("the offered price can't be lower than highest offer")
+	}
 	product.OfferPrice = uint(productOfferReq.OfferPrice)
 	product.UserID = uint(userId)
 

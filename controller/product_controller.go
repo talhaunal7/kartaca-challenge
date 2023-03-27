@@ -74,6 +74,6 @@ func (prd *ProductController) RegisterProductRoutes(rg *gin.RouterGroup) {
 	productRoute := rg.Group("/products")
 	productRoute.POST("/", middleware.ValidateToken(prd.RedisService), prd.Add)
 	productRoute.GET("/:id", prd.GetById)
-	productRoute.PUT("/", middleware.ValidateToken(prd.RedisService), prd.Offer)
+	productRoute.PUT("/offer", middleware.ValidateToken(prd.RedisService), prd.Offer)
 
 }

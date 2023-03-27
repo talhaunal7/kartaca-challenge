@@ -6,6 +6,7 @@ import (
 	"example.com/auction-api/entity"
 	"example.com/auction-api/service"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
@@ -55,8 +56,9 @@ func init() {
 	userController = controller.NewUserController(userService, redisService)
 	productService = service.NewProductService(db)
 	productController = controller.NewProductController(productService, redisService)
-	server = gin.Default()
 
+	server = gin.Default()
+	server.Use(cors.Default())
 }
 func main() {
 
