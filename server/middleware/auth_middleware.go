@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -13,9 +14,15 @@ import (
 
 func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//tokenString := c.GetHeader("Authorization")
-		tokenString, err := c.Cookie("access_token")
-		fmt.Println(tokenString)
+
+		tokenString, err := c.Cookie("Authorization")
+		fmt.Println("TOKEN", tokenString)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Couldn't get token"})
+			return
+
+		}
+
 		if tokenString == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
 			return
@@ -34,6 +41,7 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 			return []byte(os.Getenv("SECRET")), nil
 		})
 		if err != nil {
+			log.Printf(err.Error())
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
