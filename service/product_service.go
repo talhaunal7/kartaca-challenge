@@ -8,5 +8,6 @@ import (
 type ProductService interface {
 	Add(add *model.ProductAdd) error
 	GetById(id int) (*entity.Product, error)
+	GetAll() ([]*entity.Product, error)
 	Offer(offer *model.ProductOffer, userId int) error
 }

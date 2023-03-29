@@ -51,7 +51,7 @@ func (uc *UserController) Login(ctx *gin.Context) {
 		return
 	}
 	// FE response için user info dön ?
-	token, err := uc.UserService.Login(&user)
+	userResponse, token, err := uc.UserService.Login(&user)
 	if err != nil {
 		log.Printf(err.Error())
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "incorrect email or password"})
@@ -60,16 +60,22 @@ func (uc *UserController) Login(ctx *gin.Context) {
 	//ctx.SetSameSite(http.SameSiteLaxMode)
 	tokenString := "Bearer " + *token
 	ctx.SetCookie("access_token", tokenString, 3600*24*30, "", "", false /*because on localhost for now*/, true)
-	//ctx.Header("authorization", "Bearer "+*token)
-	ctx.JSON(http.StatusOK, gin.H{"username": "ali"})
+	
+	ctx.JSON(http.StatusOK, gin.H{"username": userResponse.FirstName, "id": userResponse.ID})
 }
 
 func (uc *UserController) Logout(ctx *gin.Context) {
-
-	userId, _ := ctx.Get("id")
-	err := uc.UserService.Logout(fmt.Sprintf("%v", userId))
+	var user model.UserLogout
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		log.Printf(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
+		return
+	}
+	fmt.Println(user.UserId)
+	err := uc.UserService.Logout(user.UserId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "Succesfully logged out"})
 }

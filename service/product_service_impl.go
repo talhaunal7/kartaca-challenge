@@ -31,6 +31,16 @@ func (prd *ProductServiceImpl) Add(productAddReq *model.ProductAdd) error {
 	return nil
 }
 
+func (prd *ProductServiceImpl) GetAll() ([]*entity.Product, error) {
+	//var product entity.Product
+	var products []*entity.Product
+	result := prd.db.Find(&products)
+	if result.Error != nil {
+		return nil, errors.New("couldn't find any product")
+	}
+	return products, nil
+}
+
 func (prd *ProductServiceImpl) GetById(id int) (*entity.Product, error) {
 	var product entity.Product
 	result := prd.db.First(&product, id)

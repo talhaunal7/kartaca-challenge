@@ -44,32 +44,34 @@ func (u *UserServiceImpl) Register(userRegisterRequest *model.UserRegister) erro
 	return err
 }
 
-func (u *UserServiceImpl) Login(userLoginRequest *model.UserLogin) (*string, error) {
+func (u *UserServiceImpl) Login(userLoginRequest *model.UserLogin) (*entity.User, *string, error) {
 
 	var user entity.User
 	u.db.First(&user, "email = ?", userLoginRequest.Email)
 	if user.ID == 0 {
-		return nil, errors.New("invalid email")
+		return nil, nil, errors.New("invalid email")
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userLoginRequest.Password))
 	if err != nil {
-		return nil, errors.New("invalid password")
+		return nil, nil, errors.New("invalid password")
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
-		"exp": time.Now().Add(time.Minute * 5).Unix(),
+		"exp": time.Now().Add(time.Minute * 15).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	err = u.redis.Put(strconv.Itoa(int(user.ID)), tokenString)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return &tokenString, nil
+	user.Password = ""
+
+	return &user, &tokenString, nil
 
 }
 

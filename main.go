@@ -6,7 +6,6 @@ import (
 	"example.com/auction-api/entity"
 	"example.com/auction-api/service"
 	"fmt"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
@@ -58,7 +57,18 @@ func init() {
 	productController = controller.NewProductController(productService, redisService)
 
 	server = gin.Default()
-	server.Use(cors.Default())
+	server.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3001")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization,access_token")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	})
+	//server.Use(cors.Default())
 }
 func main() {
 

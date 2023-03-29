@@ -25,12 +25,12 @@ func (prd *ProductController) Add(ctx *gin.Context) {
 	var product model.ProductAdd
 
 	if err := ctx.ShouldBindJSON(&product); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	err := prd.ProductService.Add(&product)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -40,22 +40,34 @@ func (prd *ProductController) Add(ctx *gin.Context) {
 func (prd *ProductController) GetById(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	product, err := prd.ProductService.GetById(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": product})
+}
+
+func (prd *ProductController) GetAll(ctx *gin.Context) {
+
+	products, err := prd.ProductService.GetAll()
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"products": products})
 }
 
 func (prd *ProductController) Offer(ctx *gin.Context) {
 	var productOffer model.ProductOffer
 
 	if err := ctx.ShouldBindJSON(&productOffer); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -63,9 +75,10 @@ func (prd *ProductController) Offer(ctx *gin.Context) {
 	userId, _ := tokenUserId.(float64)
 
 	if err := prd.ProductService.Offer(&productOffer, int(userId)); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{"message": "successfully offered"})
 
 }
@@ -73,7 +86,8 @@ func (prd *ProductController) Offer(ctx *gin.Context) {
 func (prd *ProductController) RegisterProductRoutes(rg *gin.RouterGroup) {
 	productRoute := rg.Group("/products")
 	productRoute.POST("/", middleware.ValidateToken(prd.RedisService), prd.Add)
-	productRoute.GET("/:id", prd.GetById)
+	productRoute.GET("/:id", middleware.ValidateToken(prd.RedisService), prd.GetById)
+	productRoute.GET("/all", middleware.ValidateToken(prd.RedisService), prd.GetAll)
 	productRoute.PUT("/offer", middleware.ValidateToken(prd.RedisService), prd.Offer)
 
 }
