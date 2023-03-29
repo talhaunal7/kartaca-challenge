@@ -7,5 +7,6 @@ type Product struct {
 	Name       string
 	OfferPrice uint
 	UserID     uint
+	ImgUrl     string
 	User       User `gorm:"foreignkey:UserID"`
 }

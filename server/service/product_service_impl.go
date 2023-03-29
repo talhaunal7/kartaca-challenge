@@ -22,7 +22,7 @@ func (prd *ProductServiceImpl) Add(productAddReq *model.ProductAdd) error {
 	product := entity.Product{
 		Name:       productAddReq.Name,
 		OfferPrice: productAddReq.OfferPrice,
-		UserID:     30,
+		UserID:     40,
 	}
 	result := prd.db.Create(&product)
 	if result.Error != nil {

@@ -54,16 +54,15 @@ func (prd *ProductController) GetById(ctx *gin.Context) {
 func (prd *ProductController) GetAll(ctx *gin.Context) {
 
 	products, err := prd.ProductService.GetAll()
-
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 		return
 	}
-
 	ctx.JSON(http.StatusOK, gin.H{"products": products})
 }
 
 func (prd *ProductController) Offer(ctx *gin.Context) {
+
 	var productOffer model.ProductOffer
 
 	if err := ctx.ShouldBindJSON(&productOffer); err != nil {
