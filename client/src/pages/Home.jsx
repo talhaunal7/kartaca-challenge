@@ -1,30 +1,39 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+//import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [version, setVersion] = useState(0);
 
-  const cat = useLocation().search;
+  //const cat = useLocation().search;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/v1/products/all${cat}`,
-          { withCredentials: true }
-        );
+        const res = await axios.get(`http://localhost:3000/v1/products/all`, {
+          withCredentials: true,
+        });
         setProducts(res.data.products);
         console.log(res);
       } catch (err) {
         console.log(err);
       }
     };
+
+    // Set interval to fetch data every 5 seconds
+    const interval = setInterval(() => {
+      setVersion((prevVersion) => prevVersion + 1);
+    }, 5000);
+
+    // Fetch initial data
     fetchData();
-  }, [cat, version]);
+
+    // Clear interval on unmount
+    return () => clearInterval(interval);
+  }, [version]);
 
   const handleOfferSubmit = (event, productId, offerPrice) => {
     event.preventDefault();
@@ -60,32 +69,46 @@ const Home = () => {
               <img src={product.ImgUrl} alt="" />
             </div>
             <div className="content">
-              <Link className="link" to={`/post/${product.ID}`}>
+              <span className="link">
                 <h1>{product.Name}</h1>
-              </Link>
-              <p>Highest offer: {getText(product.OfferPrice)}</p>
-              <form
-                onSubmit={(event) => {
-                  handleOfferSubmit(
-                    event,
-                    product.ID,
-                    event.target.elements.offerPrice.value
-                  );
-                }}
-              >
-                <label htmlFor={`offerPrice_${product.ID}`}>
-                  Make an offer:
-                </label>
-                <input
-                  id={`offerPrice_${product.ID}`}
-                  type="number"
-                  name="offerPrice"
-                  min={product.OfferPrice}
-                  step="1"
-                  required
-                />
-                <button type="submit">Submit offer</button>
-              </form>
+              </span>
+              <div class="highest-offer">
+                <span class="highest-offer-header">Highest Offer</span>
+                <span class="offer-price">{getText(product.OfferPrice)} ₺</span>
+                <span class="highest-offer-header">Offered by</span>
+                <span class="offerer-name">
+                  {getText(product.User.FirstName)}{" "}
+                  {getText(product.User.LastName)}
+                </span>
+              </div>
+              <div className="offer-container">
+                <form
+                  className="offer-form"
+                  onSubmit={(event) => {
+                    handleOfferSubmit(
+                      event,
+                      product.ID,
+                      event.target.elements.offerPrice.value
+                    );
+                  }}
+                >
+                  <label htmlFor={`offerPrice_${product.ID}`}>
+                    Make an offer:
+                  </label>
+                  <input
+                    className="offer-input"
+                    id={`offerPrice_${product.ID}`}
+                    type="number"
+                    name="offerPrice"
+                    min={product.OfferPrice}
+                    step="1"
+                    required
+                  />
+                  <button className="offer-button" type="submit">
+                    Submit offer
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         ))}

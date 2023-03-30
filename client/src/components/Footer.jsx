@@ -6,7 +6,14 @@ const Footer = () => {
     <footer>
       <img src={Logo} alt="" />
       <span>
-        Made with ♥️ and <b>React.js</b>.
+        Made by{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.github.com/talhaunal7"
+        >
+          Talha Ünal
+        </a>
       </span>
     </footer>
   );

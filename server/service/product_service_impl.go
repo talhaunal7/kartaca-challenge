@@ -34,7 +34,8 @@ func (prd *ProductServiceImpl) Add(productAddReq *model.ProductAdd) error {
 func (prd *ProductServiceImpl) GetAll() ([]*entity.Product, error) {
 	//var product entity.Product
 	var products []*entity.Product
-	result := prd.db.Find(&products)
+	//result := prd.db.Find(&products)
+	result := prd.db.Preload("User").Find(&products)
 	if result.Error != nil {
 		return nil, errors.New("couldn't find any product")
 	}

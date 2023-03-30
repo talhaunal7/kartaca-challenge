@@ -58,6 +58,10 @@ func (prd *ProductController) GetAll(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 		return
 	}
+	for i, _ := range products {
+		products[i].User.Password = ""
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{"products": products})
 }
 
