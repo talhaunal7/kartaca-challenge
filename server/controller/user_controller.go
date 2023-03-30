@@ -54,7 +54,7 @@ func (uc *UserController) Login(ctx *gin.Context) {
 
 	tokenString := "Bearer " + *token
 	ctx.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
-	ctx.JSON(http.StatusOK, gin.H{"username": userResponse.FirstName, "id": userResponse.ID})
+	ctx.JSON(http.StatusOK, gin.H{"username": userResponse.FirstName + " " + userResponse.LastName, "id": userResponse.ID})
 }
 
 func (uc *UserController) Logout(ctx *gin.Context) {

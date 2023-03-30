@@ -72,11 +72,13 @@ const Home = () => {
               <span className="link">
                 <h1>{product.Name}</h1>
               </span>
-              <div class="highest-offer">
-                <span class="highest-offer-header">Highest Offer</span>
-                <span class="offer-price">{getText(product.OfferPrice)} ₺</span>
-                <span class="highest-offer-header">Offered by</span>
-                <span class="offerer-name">
+              <div className="highest-offer">
+                <span className="highest-offer-header">Highest Offer</span>
+                <span className="offer-price">
+                  {getText(product.OfferPrice)} ₺
+                </span>
+                <span className="highest-offer-header">Offered by</span>
+                <span className="offerer-name">
                   {getText(product.User.FirstName)}{" "}
                   {getText(product.User.LastName)}
                 </span>

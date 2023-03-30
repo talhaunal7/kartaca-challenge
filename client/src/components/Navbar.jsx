@@ -15,9 +15,14 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="links">
-          <span>{currentUser?.username}</span>
+          <span className="">
+            Welcome back !{" "}
+            <span className="user-welcome">{currentUser?.username} </span>
+          </span>
           {currentUser ? (
-            <span onClick={logout}>Logout</span>
+            <span className="logout-btn" onClick={logout}>
+              Logout
+            </span>
           ) : (
             <Link className="link" to="/login">
               Login
