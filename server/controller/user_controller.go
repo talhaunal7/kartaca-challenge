@@ -48,7 +48,7 @@ func (uc *UserController) Login(ctx *gin.Context) {
 	userResponse, token, err := uc.UserService.Login(&user)
 	if err != nil {
 		log.Printf(err.Error())
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "incorrect email or password"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 

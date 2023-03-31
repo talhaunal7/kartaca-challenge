@@ -11,6 +11,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"os"
 )
@@ -33,17 +34,27 @@ func init() {
 		log.Fatal("Error loading .env file")
 	}
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Password: "",
 		DB:       0,
 	})
 	ctx = context.Background()
 
-	dsn := os.Getenv("DB")
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	//dsn := os.Getenv("DB")
+	dsn := fmt.Sprintf("host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+	)
+
+	//db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+
 	if err != nil {
 		fmt.Println(err)
-		panic("failed to connect to DB")
+		os.Exit(2)
 	}
 	err = db.AutoMigrate(&entity.User{}, &entity.Product{})
 	if err != nil {
