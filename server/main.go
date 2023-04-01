@@ -2,18 +2,19 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"log"
+	"os"
+
 	"example.com/auction-api/controller"
 	"example.com/auction-api/entity"
 	"example.com/auction-api/service"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"os"
 )
 
 var (
@@ -31,7 +32,7 @@ var (
 func init() {
 	err = godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal(err.Error())
 	}
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "redis:6379",
@@ -69,7 +70,7 @@ func init() {
 
 	server = gin.Default()
 	server.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3001")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization,access_token")
@@ -86,6 +87,6 @@ func main() {
 	basepath := server.Group("/v1")
 	userController.RegisterUserRoutes(basepath)
 	productController.RegisterProductRoutes(basepath)
-	log.Fatal(server.Run(":3000"))
+	log.Fatal(server.Run(":8080"))
 
 }

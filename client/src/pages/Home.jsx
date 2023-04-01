@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/v1/products/all`, {
+        const res = await axios.get(`/v1/products/all`, {
           withCredentials: true,
         });
         setProducts(res.data.products);
@@ -39,7 +39,7 @@ const Home = () => {
     event.preventDefault();
     axios
       .put(
-        "http://localhost:3000/v1/products/offer",
+        "/v1/products/offer",
         {
           productId: productId,
           offerPrice: parseInt(offerPrice),

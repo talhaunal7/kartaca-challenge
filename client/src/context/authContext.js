@@ -19,7 +19,7 @@ export const AuthContexProvider = ({ children }) => {
     console.log(currentUser.id);
     console.log(toString(currentUser.id));
     await axios
-      .post("http://localhost:3000/v1/users/logout", {
+      .post("/v1/users/logout", {
         id: currentUser.id.toString(),
       })
       .then(function (response) {
