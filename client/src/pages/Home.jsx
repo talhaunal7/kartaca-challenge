@@ -1,13 +1,13 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-//import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [version, setVersion] = useState(0);
-
+  const navigate = useNavigate();
   //const cat = useLocation().search;
 
   useEffect(() => {
@@ -16,24 +16,25 @@ const Home = () => {
         const res = await axios.get(`/v1/products/all`, {
           withCredentials: true,
         });
+
         setProducts(res.data.products);
         console.log(res);
       } catch (err) {
         console.log(err);
+        if (err.response.status !== 200) {
+          navigate("/login");
+        }
       }
     };
 
-    // Set interval to fetch data every 5 seconds
     const interval = setInterval(() => {
       setVersion((prevVersion) => prevVersion + 1);
     }, 5000);
 
-    // Fetch initial data
     fetchData();
 
-    // Clear interval on unmount
     return () => clearInterval(interval);
-  }, [version]);
+  }, [version, navigate]);
 
   const handleOfferSubmit = (event, productId, offerPrice) => {
     event.preventDefault();

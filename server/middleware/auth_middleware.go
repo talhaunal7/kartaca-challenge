@@ -1,15 +1,16 @@
 package middleware
 
 import (
-	"example.com/auction-api/service"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"example.com/auction-api/service"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func ValidateToken(redis service.RedisService) gin.HandlerFunc {
@@ -18,6 +19,7 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 		tokenString, err := c.Cookie("Authorization")
 		fmt.Println("TOKEN", tokenString)
 		if err != nil {
+			log.Print(err.Error())
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Couldn't get token"})
 			return
 
@@ -41,7 +43,7 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 			return []byte(os.Getenv("SECRET")), nil
 		})
 		if err != nil {
-			log.Printf(err.Error())
+			log.Print(err.Error())
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
@@ -52,7 +54,6 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token is expired"})
 				return
 			}
-
 		}
 		userId := claims["sub"]
 		redisToken, err := redis.Get(fmt.Sprintf("%v", userId))

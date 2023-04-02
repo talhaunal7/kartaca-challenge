@@ -1,6 +1,5 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-
 export const AuthContext = createContext();
 
 export const AuthContexProvider = ({ children }) => {
@@ -16,8 +15,6 @@ export const AuthContexProvider = ({ children }) => {
   };
 
   const logout = async (inputs) => {
-    console.log(currentUser.id);
-    console.log(toString(currentUser.id));
     await axios
       .post("/v1/users/logout", {
         id: currentUser.id.toString(),

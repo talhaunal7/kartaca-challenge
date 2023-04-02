@@ -8,5 +8,5 @@ type Product struct {
 	OfferPrice uint
 	UserID     uint
 	ImgUrl     string
-	User       User `gorm:"foreignkey:UserID"`
+	User       User `gorm:"foreignkey:UserID"` 
 }

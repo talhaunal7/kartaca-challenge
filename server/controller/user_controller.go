@@ -1,12 +1,13 @@
 package controller
 
 import (
+	"log"
+	"net/http"
+
 	"example.com/auction-api/middleware"
 	"example.com/auction-api/model"
 	"example.com/auction-api/service"
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 )
 
 type UserController struct {
@@ -24,13 +25,13 @@ func NewUserController(userService service.UserService, redisService service.Red
 func (uc *UserController) Register(ctx *gin.Context) {
 	var user model.UserRegister
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		log.Printf(err.Error())
+		log.Print(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
 	err := uc.UserService.Register(&user)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Print(err.Error())
 		ctx.JSON(http.StatusConflict, gin.H{"error": "user already exists"})
 		return
 	}
@@ -41,14 +42,14 @@ func (uc *UserController) Register(ctx *gin.Context) {
 func (uc *UserController) Login(ctx *gin.Context) {
 	var user model.UserLogin
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		log.Printf(err.Error())
+		log.Print(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
 	userResponse, token, err := uc.UserService.Login(&user)
 	if err != nil {
-		log.Printf(err.Error())
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		log.Print(err.Error())
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
 		return
 	}
 
@@ -60,7 +61,7 @@ func (uc *UserController) Login(ctx *gin.Context) {
 func (uc *UserController) Logout(ctx *gin.Context) {
 	var user model.UserLogout
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		log.Printf(err.Error())
+		log.Print(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
@@ -73,9 +74,10 @@ func (uc *UserController) Logout(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Succesfully logged out"})
 }
 
-func (uc *UserController) Validate(ctx *gin.Context) {
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Validated"})
+func (uc *UserController) Validate(ctx *gin.Context) {
+	//this function is used for validating the token	
+	ctx.JSON(http.StatusOK, gin.H{"message": "validated"})
 }
 
 func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {

@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,7 +18,6 @@ const Login = () => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  console.log(inputs);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
