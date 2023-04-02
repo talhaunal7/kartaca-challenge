@@ -1,5 +1,6 @@
 # kartaca-challenge
-
+[My Challenge Solution](./challenge_solution.js)<br>
+Registration Key = 6c057aefc0bdf1addb6ec8f4d525ee063e0552d26a8f9e3a260c893be96768d3
 ## About The Project
 ![](https://i.imgur.com/KGucE1F.png)
 The project is a full stack web application that allows users to bid on products in an online auction. It was built using Golang for the back-end, with a React front-end and a Postgres database. Redis is used to store session information for logged-in users, while JWT is used for authentication.
