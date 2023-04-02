@@ -69,7 +69,8 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 	}
 }
 
-func GetUserIdFromContext(ctx *gin.Context) any {
+func GetUserIdFromContext(ctx *gin.Context) float64 {
 	tokenUserId, _ := ctx.Get("id")
-	return tokenUserId
+	userId, _ := tokenUserId.(float64)
+	return userId
 }

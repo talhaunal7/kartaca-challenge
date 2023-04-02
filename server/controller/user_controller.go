@@ -1,13 +1,12 @@
 package controller
 
 import (
-	"example.com/auction-api/model"
-	"log"
-	"net/http"
-
 	"example.com/auction-api/middleware"
+	"example.com/auction-api/model"
 	"example.com/auction-api/service"
 	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 )
 
 type UserController struct {
@@ -59,8 +58,7 @@ func (uc *UserController) Login(ctx *gin.Context) {
 }
 
 func (uc *UserController) Logout(ctx *gin.Context) {
-	userIdAny := middleware.GetUserIdFromContext(ctx)
-	userId, _ := userIdAny.(string)
+	userId := middleware.GetUserIdFromContext(ctx)
 	err := uc.UserService.Logout(userId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

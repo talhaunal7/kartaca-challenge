@@ -81,8 +81,9 @@ func (u *UserServiceImpl) Login(userLoginRequest *model.UserLogin) (*model.UserD
 
 }
 
-func (u *UserServiceImpl) Logout(id string) error {
-	err := u.redis.Remove(id)
+func (u *UserServiceImpl) Logout(id float64) error {
+	userId := strconv.FormatFloat(id, 'f', 0, 64)
+	err := u.redis.Remove(userId)
 	if err != nil {
 		return err
 	}

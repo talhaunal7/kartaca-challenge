@@ -38,7 +38,7 @@ func (prd *ProductServiceImpl) GetAll() ([]*model.ProductDto, error) {
 		return nil, errors.New("couldn't find any product")
 	}
 
-	var productDtos []*model.ProductDto
+	productDtos := make([]*model.ProductDto, len(products))
 	for i, v := range products {
 		productDto := model.ProductDto{
 			ID:            v.ID,

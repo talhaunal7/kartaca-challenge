@@ -80,8 +80,8 @@ const Home = () => {
                 </span>
                 <span className="highest-offer-header">Offered by</span>
                 <span className="offerer-name">
-                  {getText(product.User.FirstName)}{" "}
-                  {getText(product.User.LastName)}
+                  {getText(product.UserFirstName)}{" "}
+                  {getText(product.UserLastName)}
                 </span>
               </div>
               <div className="offer-container">
