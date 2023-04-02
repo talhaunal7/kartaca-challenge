@@ -31,28 +31,33 @@ func (prd *ProductServiceImpl) Add(productAddReq *model.ProductAdd) error {
 	return nil
 }
 
-func (prd *ProductServiceImpl) GetAll() ([]*entity.Product, error) {
+func (prd *ProductServiceImpl) GetAll() ([]*model.ProductDto, error) {
 	var products []*entity.Product
 	result := prd.db.Order("name desc").Preload("User").Find(&products)
 	if result.Error != nil {
 		return nil, errors.New("couldn't find any product")
 	}
-	return products, nil
-}
 
-func (prd *ProductServiceImpl) GetById(id int) (*entity.Product, error) {
-	var product entity.Product
-	result := prd.db.First(&product, id)
-	if result.Error != nil {
-		return nil, errors.New("could not found")
+	var productDtos []*model.ProductDto
+	for i, v := range products {
+		productDto := model.ProductDto{
+			ID:            v.ID,
+			Name:          v.Name,
+			OfferPrice:    v.OfferPrice,
+			UserID:        v.UserID,
+			ImgUrl:        v.ImgUrl,
+			UserFirstName: v.User.FirstName,
+			UserLastName:  v.User.LastName,
+		}
+		productDtos[i] = &productDto
 	}
-	return &product, nil
 
+	return productDtos, nil
 }
 
 func (prd *ProductServiceImpl) Offer(productOfferReq *model.ProductOffer, userId int) error {
 
-	product, err := prd.GetById(productOfferReq.ProductId)
+	product, err := prd.getById(productOfferReq.ProductId)
 	if err != nil {
 		return err
 	}
@@ -67,4 +72,13 @@ func (prd *ProductServiceImpl) Offer(productOfferReq *model.ProductOffer, userId
 	}
 
 	return nil
+}
+
+func (prd *ProductServiceImpl) getById(id int) (*entity.Product, error) {
+	var product entity.Product
+	result := prd.db.First(&product, id)
+	if result.Error != nil {
+		return nil, errors.New("could not found")
+	}
+	return &product, nil
 }

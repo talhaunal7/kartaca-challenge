@@ -1,13 +1,11 @@
 package controller
 
 import (
-	"example.com/auction-api/model"
-	"net/http"
-	"strconv"
-
 	"example.com/auction-api/middleware"
+	"example.com/auction-api/model"
 	"example.com/auction-api/service"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type ProductController struct {
@@ -38,20 +36,6 @@ func (prd *ProductController) Add(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "successfully added product"})
 }
 
-func (prd *ProductController) GetById(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	product, err := prd.ProductService.GetById(id)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{"message": product})
-}
-
 func (prd *ProductController) GetAll(ctx *gin.Context) {
 
 	products, err := prd.ProductService.GetAll()
@@ -59,10 +43,6 @@ func (prd *ProductController) GetAll(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	for i, _ := range products {
-		products[i].User.Password = ""
-	}
-
 	ctx.JSON(http.StatusOK, gin.H{"products": products})
 }
 
@@ -85,7 +65,6 @@ func (prd *ProductController) Offer(ctx *gin.Context) {
 func (prd *ProductController) RegisterProductRoutes(rg *gin.RouterGroup) {
 	productRoute := rg.Group("/products")
 	productRoute.POST("/", middleware.ValidateToken(prd.RedisService), prd.Add)
-	productRoute.GET("/:id", middleware.ValidateToken(prd.RedisService), prd.GetById)
 	productRoute.GET("/", middleware.ValidateToken(prd.RedisService), prd.GetAll)
 	productRoute.PUT("/offer", middleware.ValidateToken(prd.RedisService), prd.Offer)
 }

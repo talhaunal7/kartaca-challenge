@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`/v1/products/all`, {
+        const res = await axios.get(`/v1/products`, {
           withCredentials: true,
         });
 

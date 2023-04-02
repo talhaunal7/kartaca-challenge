@@ -1,13 +1,11 @@
 package service
 
 import (
-	"example.com/auction-api/entity"
 	"example.com/auction-api/model"
 )
 
 type ProductService interface {
 	Add(add *model.ProductAdd) error
-	GetById(id int) (*entity.Product, error)
-	GetAll() ([]*entity.Product, error)
+	GetAll() ([]*model.ProductDto, error)
 	Offer(offer *model.ProductOffer, userId int) error
 }
