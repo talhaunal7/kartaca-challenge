@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-
 	"example.com/auction-api/entity"
 	"example.com/auction-api/model"
 	"gorm.io/gorm"
@@ -35,7 +34,6 @@ func (prd *ProductServiceImpl) Add(productAddReq *model.ProductAdd) error {
 func (prd *ProductServiceImpl) GetAll() ([]*entity.Product, error) {
 	var products []*entity.Product
 	result := prd.db.Order("name desc").Preload("User").Find(&products)
-	//result := prd.db.Preload("User").Find(&products)
 	if result.Error != nil {
 		return nil, errors.New("couldn't find any product")
 	}
@@ -59,7 +57,7 @@ func (prd *ProductServiceImpl) Offer(productOfferReq *model.ProductOffer, userId
 		return err
 	}
 	if int(product.OfferPrice) >= productOfferReq.OfferPrice {
-		return errors.New("the offered price can't be equal or lower than  highest offer")
+		return errors.New("the offered price can't be equal or lower than highest offer")
 	}
 	product.OfferPrice = uint(productOfferReq.OfferPrice)
 	product.UserID = &userId

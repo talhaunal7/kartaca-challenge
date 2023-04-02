@@ -1,11 +1,11 @@
 package controller
 
 import (
+	"example.com/auction-api/model"
 	"log"
 	"net/http"
 
 	"example.com/auction-api/middleware"
-	"example.com/auction-api/model"
 	"example.com/auction-api/service"
 	"github.com/gin-gonic/gin"
 )
@@ -59,14 +59,9 @@ func (uc *UserController) Login(ctx *gin.Context) {
 }
 
 func (uc *UserController) Logout(ctx *gin.Context) {
-	var user model.UserLogout
-	if err := ctx.ShouldBindJSON(&user); err != nil {
-		log.Print(err.Error())
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
-		return
-	}
-
-	err := uc.UserService.Logout(user.UserId)
+	userIdAny := middleware.GetUserIdFromContext(ctx)
+	userId, _ := userIdAny.(string)
+	err := uc.UserService.Logout(userId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
@@ -74,17 +69,9 @@ func (uc *UserController) Logout(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Succesfully logged out"})
 }
 
-
-func (uc *UserController) Validate(ctx *gin.Context) {
-	//this function is used for validating the token	
-	ctx.JSON(http.StatusOK, gin.H{"message": "validated"})
-}
-
 func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {
 	userRoute := rg.Group("/users")
 	userRoute.POST("/register", uc.Register)
 	userRoute.POST("/login", uc.Login)
-	userRoute.POST("/logout", uc.Logout)
-	userRoute.GET("/validate", middleware.ValidateToken(uc.RedisService), uc.Validate)
-
+	userRoute.POST("/logout", middleware.ValidateToken(uc.RedisService), uc.Logout)
 }

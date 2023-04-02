@@ -2,15 +2,16 @@ package service
 
 import (
 	"errors"
-	"example.com/auction-api/entity"
 	"example.com/auction-api/model"
 	"strconv"
+
+	"example.com/auction-api/entity"
+	"os"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"os"
-	"time"
 )
 
 type UserServiceImpl struct {
@@ -44,7 +45,7 @@ func (u *UserServiceImpl) Register(userRegisterRequest *model.UserRegister) erro
 	return err
 }
 
-func (u *UserServiceImpl) Login(userLoginRequest *model.UserLogin) (*entity.User, *string, error) {
+func (u *UserServiceImpl) Login(userLoginRequest *model.UserLogin) (*model.UserDto, *string, error) {
 
 	var user entity.User
 	u.db.First(&user, "email = ?", userLoginRequest.Email)
@@ -69,9 +70,14 @@ func (u *UserServiceImpl) Login(userLoginRequest *model.UserLogin) (*entity.User
 	if err != nil {
 		return nil, nil, err
 	}
-	user.Password = ""
 
-	return &user, &tokenString, nil
+	userDto := model.UserDto{
+		ID:        user.ID,
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+	}
+	return &userDto, &tokenString, nil
 
 }
 
@@ -82,17 +88,3 @@ func (u *UserServiceImpl) Logout(id string) error {
 	}
 	return nil
 }
-
-func (u *UserServiceImpl) Validate() error {
-
-	return nil
-}
-
-/*
-func (u *UserServiceImpl) GetUser(name *string) (*entity.User, error) {
-	//var user *entity.User
-	//get user
-	return nil, nil
-}
-
-*/
