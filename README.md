@@ -1,7 +1,7 @@
 # kartaca-challenge
 
 ## About The Project
-![](diagram.png)
+![](https://i.imgur.com/KGucE1F.png)
 The project is a full stack web application that allows users to bid on products in an online auction. It was built using Golang for the back-end, with a React front-end and a Postgres database. Redis is used to store session information for logged-in users, while JWT is used for authentication.
 
 Users can create accounts and log in to view three  product listings on the home page. Logged-in users can participate in live auctions by bidding on products. The frontend is constantly refreshed at regular intervals to keep the participants informed about the current prices.
@@ -30,7 +30,7 @@ Application will run on [http://localhost:3000](http://localhost:3000)
 
 
 ## Usage
-![](usage.gif)
+![](https://i.imgur.com/r6xJn8B.gif)
 
 ## How Does The Application Works ?
 
