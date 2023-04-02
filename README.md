@@ -14,8 +14,8 @@ Users can create accounts and log in to view three product listings on the home 
 
 ![golang](https://badges.aleen42.com/src/golang.svg) ![react](https://badges.aleen42.com/src/react.svg)
 
--     [Go](https://go.dev/)
--     [Gin](https://github.com/gin-gonic/gin)
+- [Go](https://go.dev/)
+- [Gin](https://github.com/gin-gonic/gin)
 - [React](https://react.dev/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Redis](https://redis.io/)
