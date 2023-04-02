@@ -21,13 +21,19 @@ Users can create accounts and log in to view three  product listings on the home
 
 ## Run Locally
 
-Clone and run project with docker compose.
+1. Clone the project
+2. Enter the project folder
+```bash
+  $ cd kartaca-challenge
+```
+3. Run project with docker compose.
 
 ```bash
-  $ docker-compose up
+  $ docker compose up
 ```
 
-Application will run on [http://localhost:3000](http://localhost:3000)
+You can reach to Application UI on [http://localhost:3000](http://localhost:3000)<br>
+API Server will run on [http://localhost:8080](http://localhost:8080)
 
 
 ## Usage
