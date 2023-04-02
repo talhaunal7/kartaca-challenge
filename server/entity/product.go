@@ -6,7 +6,7 @@ type Product struct {
 	gorm.Model
 	Name       string
 	OfferPrice uint
-	UserID     uint
+	UserID     *int `sql:"DEFAULT:NULL"`
 	ImgUrl     string
-	User       User `gorm:"foreignkey:UserID"` 
+	User       User `gorm:"foreignkey:UserID"`
 }

@@ -2,19 +2,18 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"os"
-
 	"example.com/auction-api/controller"
 	"example.com/auction-api/entity"
 	"example.com/auction-api/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
+	"os"
 )
 
 var (
@@ -84,8 +83,39 @@ func init() {
 }
 
 func main() {
+	initData()
+
 	basepath := server.Group("/v1")
 	userController.RegisterUserRoutes(basepath)
 	productController.RegisterProductRoutes(basepath)
 	log.Fatal(server.Run(":8080"))
+}
+
+func initData() {
+	var count int64
+	db.Model(&entity.Product{}).Count(&count)
+
+	if count == 0 {
+		products := []entity.Product{
+			{
+				Name:       "Iznik Design Ceramic Vase",
+				OfferPrice: 1,
+				ImgUrl:     "https://i.ibb.co/tBBjhCz/Iznik-Design-Ceramic-Vase.jpg",
+			},
+			{
+				Name:       "Handmade Artifact Necklace",
+				OfferPrice: 1,
+				ImgUrl:     "https://i.ibb.co/ZxmNqqV/Handmade-Artifact-Necklace.jpg",
+			},
+			{
+				Name:       "Persian Carpet - Gordes Carpet",
+				OfferPrice: 1,
+				ImgUrl:     "https://i.ibb.co/rQ858wL/Persian-Carpet-Gordes-Carpet.jpg",
+			},
+		}
+
+		if err = db.Create(&products).Error; err != nil {
+			log.Fatal(err.Error())
+		}
+	}
 }

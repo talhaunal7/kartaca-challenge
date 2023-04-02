@@ -20,10 +20,10 @@ func NewProductService(db *gorm.DB) ProductService {
 
 func (prd *ProductServiceImpl) Add(productAddReq *model.ProductAdd) error {
 
-	product := entity.Product{
+	var product = entity.Product{
 		Name:       productAddReq.Name,
 		OfferPrice: productAddReq.OfferPrice,
-		UserID:     1,
+		UserID:     nil,
 	}
 	result := prd.db.Create(&product)
 	if result.Error != nil {
@@ -34,7 +34,7 @@ func (prd *ProductServiceImpl) Add(productAddReq *model.ProductAdd) error {
 
 func (prd *ProductServiceImpl) GetAll() ([]*entity.Product, error) {
 	var products []*entity.Product
-	result:=prd.db.Order("name desc").Preload("User").Find(&products)
+	result := prd.db.Order("name desc").Preload("User").Find(&products)
 	//result := prd.db.Preload("User").Find(&products)
 	if result.Error != nil {
 		return nil, errors.New("couldn't find any product")
@@ -62,7 +62,7 @@ func (prd *ProductServiceImpl) Offer(productOfferReq *model.ProductOffer, userId
 		return errors.New("the offered price can't be equal or lower than  highest offer")
 	}
 	product.OfferPrice = uint(productOfferReq.OfferPrice)
-	product.UserID = uint(userId)
+	product.UserID = &userId
 
 	if result := prd.db.Save(&product); result.Error != nil {
 		return result.Error

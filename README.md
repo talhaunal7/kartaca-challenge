@@ -1,1 +1,45 @@
 # kartaca-challenge
+
+## About The Project
+![](diagram.png)
+The project is a full stack web application that allows users to bid on products in an online auction. It was built using Golang for the back-end, with a React front-end and a Postgres database. Redis is used to store session information for logged-in users, while JWT is used for authentication.
+
+Users can create accounts and log in to view three  product listings on the home page. Logged-in users can participate in live auctions by bidding on products. The frontend is constantly refreshed at regular intervals to keep the participants informed about the current prices.
+
+
+## Technologies Used
+![golang](https://badges.aleen42.com/src/golang.svg)   ![react](https://badges.aleen42.com/src/react.svg)
+* 	[Go](https://go.dev/)
+* 	[Gin](https://github.com/gin-gonic/gin)
+*  [React](https://react.dev/)
+*  [PostgreSQL](https://www.postgresql.org/)
+*  [Redis]( https://redis.io/)
+*  [GORM](https://gorm.io/)
+*  [Sass](https://sass-lang.com/)
+*  [Docker](https://www.docker.com/) with docker-compose
+
+## Run Locally
+
+Clone and run project with docker compose.
+
+```bash
+  $ docker-compose up
+```
+
+Application will run on [http://localhost:3000](http://localhost:3000)
+
+
+## Usage
+![](usage.gif)
+
+## How Does The Application Works ?
+
+| Endpoints localhost:8080/                               | Example Requests                                                  | Response                                |
+| ---------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------- |
+| (POST) /v1/users/register   | ```` {"email": "talhaunal@gmail.com", "password": "123456", "firstName": "talha", "lastName": "ünal"} ```` | Successfuly Registered  |
+| (POST) /v1/users/login        | ````{"email": "talhaunal@gmail.com", "password": "123456"}     ````  | User Data <br> Set Cookie - <br> ```` Authorization : Token ````                  |
+| (POST) /v1/users/logout       |  ````{"id": 1} ````      | Successfuly Logged Out                                      |
+| (GET) /v1/products/all  | Set Cookie - ```` Authorization : Token````      | ```` {Product 1 : Prd. Data}```` ```` {Product 2 : Prd. Data}  ````|
+| (PUT) /v1/products/offer     |  Set Cookie - ```` Authorization : Token ```` <br> ````{ "productId":6, "offerPrice":400 }  ````        | Successfuly Offered   |
+
+
