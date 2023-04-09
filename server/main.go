@@ -100,17 +100,17 @@ func initData() {
 			{
 				Name:       "Iznik Design Ceramic Vase",
 				OfferPrice: 1,
-				ImgUrl:     "https://i.ibb.co/tBBjhCz/Iznik-Design-Ceramic-Vase.jpg",
+				ImgUrl:     "https://imgur.com/KP1co0W.jpg",
 			},
 			{
 				Name:       "Handmade Artifact Necklace",
 				OfferPrice: 1,
-				ImgUrl:     "https://i.ibb.co/ZxmNqqV/Handmade-Artifact-Necklace.jpg",
+				ImgUrl:     "https://imgur.com/pyvM57E.jpg",
 			},
 			{
 				Name:       "Persian Carpet - Gordes Carpet",
 				OfferPrice: 1,
-				ImgUrl:     "https://i.ibb.co/rQ858wL/Persian-Carpet-Gordes-Carpet.jpg",
+				ImgUrl:     "https://imgur.com/0UK3CdX.jpg",
 			},
 		}
 
