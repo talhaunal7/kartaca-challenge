@@ -1,5 +1,12 @@
 # Online Auction
 
+## Roadmap
+
+- [ ] Implement WebSocket connection
+    - [ ] Frontend
+    - [ ] Backend
+- [ ] Create a solution for Race Condition (2 users bidding at the same time)
+
 ## About The Project
 
 ![](https://i.imgur.com/27rEuH9.png)
