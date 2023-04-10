@@ -1,7 +1,4 @@
-# kartaca-challenge
-
-[My Challenge Solution](./challenge_solution.js)<br>
-Registration Key = 6c057aefc0bdf1addb6ec8f4d525ee063e0552d26a8f9e3a260c893be96768d3
+# Online Auction
 
 ## About The Project
 
@@ -23,6 +20,10 @@ Users can create accounts and log in to view three product listings on the home 
 - [Sass](https://sass-lang.com/)
 - [Docker](https://www.docker.com/) with docker-compose
 
+## Usage
+
+![](https://i.imgur.com/r6xJn8B.gif)
+
 ## Run Locally
 
 1. Clone the project
@@ -41,9 +42,6 @@ Users can create accounts and log in to view three product listings on the home 
 You can reach to Application UI on [http://localhost:3000](http://localhost:3000)<br>
 API Server will run on [http://localhost:8080](http://localhost:8080)
 
-## Usage
-
-![](https://i.imgur.com/r6xJn8B.gif)
 
 ## How Does The Application Works ?
 
