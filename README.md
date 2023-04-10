@@ -1,12 +1,5 @@
 # Online Auction
 
-## Roadmap
-
-- [ ] Implement WebSocket connection
-    - [ ] Frontend
-    - [ ] Backend
-- [ ] Create a solution for Race Condition (2 users bidding at the same time)
-
 ## About The Project
 
 ![](https://i.imgur.com/27rEuH9.png)
@@ -49,6 +42,13 @@ Users can create accounts and log in to view three product listings on the home 
 You can reach to Application UI on [http://localhost:3000](http://localhost:3000)<br>
 API Server will run on [http://localhost:8080](http://localhost:8080)
 
+
+## Roadmap
+
+- [ ] Implement WebSocket connection
+    - [ ] Frontend
+    - [ ] Backend
+- [ ] Create a solution for Race Condition (2 users bidding at the same time)
 
 ## How Does The Application Works ?
 
