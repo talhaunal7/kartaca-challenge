@@ -2,10 +2,14 @@
 
 ## About The Project
 
-![](https://i.imgur.com/27rEuH9.png)
-The project is a full stack web application that allows users to bid on products in an online auction. It was built using Golang for the back-end, with a React front-end and a Postgres database. Redis is used to store session information for logged-in users, while JWT is used for authentication.
 
-Users can create accounts and log in to view three product listings on the home page. Logged-in users can participate in live auctions by bidding on products. The frontend is constantly refreshed at regular intervals to keep the participants informed about the current prices.
+* The project is a full stack web application that allows users to bid on products in an online auction.
+    * It was built using Golang and Gin for the back-end, with a React front-end and a Postgres database.
+    * Redis is used to store session information for logged-in users, while JWT is used for authentication.
+
+* Users can create accounts and log in to view three product listings on the home page.
+* Logged-in users can participate in live auctions by bidding on products.
+    * The frontend is constantly refreshed at regular intervals to keep the participants informed about the current prices.
 
 ## Technologies Used
 
@@ -58,4 +62,7 @@ API Server will run on [http://localhost:8080](http://localhost:8080)
 | (POST) /v1/users/login    | `{"email": "talhaunal@gmail.com", "password": "123456"}     `                                      | User Data <br> Set Cookie - <br> `Authorization : Token` |
 | (POST) /v1/users/logout   | Set Cookie - ` Authorization : Token` (Token contains user id)                                     | Successfuly Logged Out                                   |
 | (GET) /v1/products/all    | Set Cookie - ` Authorization : Token`                                                              | ` {Product 1 : Prd. Data}` `{Product 2 : Prd. Data} `    |
-| (PUT) /v1/products/offer  | Set Cookie - `Authorization : Token` <br> `{ "productId":6, "offerPrice":400 }  `                  | Successfuly Offered                                      |
+| (PUT) /v1/products/offer  | Set Cookie - `Authorization : Token` <br> `{ "productId":6, "offerPrice":400 }  `                  | Successfuly Offered                                      
+
+
+![](https://i.imgur.com/27rEuH9.png)
