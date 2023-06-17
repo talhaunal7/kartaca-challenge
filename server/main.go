@@ -4,6 +4,7 @@ import (
 	"context"
 	"example.com/auction-api/controller"
 	"example.com/auction-api/entity"
+	"example.com/auction-api/middleware"
 	"example.com/auction-api/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,7 @@ var (
 	ctx               context.Context
 	db                *gorm.DB
 	err               error
+	authMiddleware    middleware.AuthMiddleware
 )
 
 func init() {
@@ -58,17 +60,22 @@ func init() {
 	}
 
 	err = db.AutoMigrate(&entity.User{}, &entity.Product{})
+
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
 	redisService = service.NewRedisService(rdb, ctx)
+	authMiddleware = middleware.NewAuthMiddleware(redisService)
+
 	userService = service.NewUserService(db, redisService)
-	userController = controller.NewUserController(userService, redisService)
+	userController = controller.NewUserController(userService, authMiddleware)
+
 	productService = service.NewProductService(db)
-	productController = controller.NewProductController(productService, redisService)
+	productController = controller.NewProductController(productService, authMiddleware)
 
 	server = gin.Default()
+
 	server.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")

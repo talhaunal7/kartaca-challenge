@@ -13,7 +13,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func ValidateToken(redis service.RedisService) gin.HandlerFunc {
+type AuthMiddleware struct {
+	RedisService service.RedisService
+}
+
+func NewAuthMiddleware(redisService service.RedisService) AuthMiddleware {
+	return AuthMiddleware{
+		RedisService: redisService,
+	}
+}
+
+func (am AuthMiddleware) ValidateToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		tokenString, err := c.Cookie("Authorization")
@@ -56,7 +66,8 @@ func ValidateToken(redis service.RedisService) gin.HandlerFunc {
 			}
 		}
 		userId := claims["sub"]
-		redisToken, err := redis.Get(fmt.Sprintf("%v", userId))
+
+		redisToken, err := am.RedisService.Get(fmt.Sprintf("%v", userId))
 
 		if redisToken == nil || *redisToken != tokenString || err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})

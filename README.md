@@ -34,7 +34,7 @@
 2. Enter the project folder
 
 ```bash
-  $ cd kartaca-challenge
+  $ cd online-auction
 ```
 
 3. Run project with docker compose.

@@ -11,12 +11,13 @@ import (
 type ProductController struct {
 	ProductService service.ProductService
 	RedisService   service.RedisService
+	AuthMiddleware middleware.AuthMiddleware
 }
 
-func NewProductController(productService service.ProductService, redisService service.RedisService) ProductController {
+func NewProductController(productService service.ProductService, authMiddleware middleware.AuthMiddleware) ProductController {
 	return ProductController{
 		ProductService: productService,
-		RedisService:   redisService,
+		AuthMiddleware: authMiddleware,
 	}
 }
 
@@ -63,7 +64,8 @@ func (prd *ProductController) Offer(ctx *gin.Context) {
 
 func (prd *ProductController) RegisterProductRoutes(rg *gin.RouterGroup) {
 	productRoute := rg.Group("/products")
-	productRoute.POST("/", middleware.ValidateToken(prd.RedisService), prd.Add)
-	productRoute.GET("/", middleware.ValidateToken(prd.RedisService), prd.GetAll)
-	productRoute.PUT("/offer", middleware.ValidateToken(prd.RedisService), prd.Offer)
+
+	productRoute.POST("/", prd.AuthMiddleware.ValidateToken(), prd.Add)
+	productRoute.GET("/", prd.AuthMiddleware.ValidateToken(), prd.GetAll)
+	productRoute.PUT("/offer", prd.AuthMiddleware.ValidateToken(), prd.Offer)
 }

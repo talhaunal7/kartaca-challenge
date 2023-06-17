@@ -10,25 +10,30 @@ import (
 )
 
 type UserController struct {
-	UserService  service.UserService
-	RedisService service.RedisService
+	UserService    service.UserService
+	RedisService   service.RedisService
+	AuthMiddleware middleware.AuthMiddleware
 }
 
-func NewUserController(userService service.UserService, redisService service.RedisService) UserController {
+func NewUserController(userService service.UserService, authMiddleware middleware.AuthMiddleware) UserController {
 	return UserController{
-		UserService:  userService,
-		RedisService: redisService,
+		UserService:    userService,
+		AuthMiddleware: authMiddleware,
 	}
 }
 
 func (uc *UserController) Register(ctx *gin.Context) {
+
 	var user model.UserRegister
+
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		log.Print(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
+
 	err := uc.UserService.Register(&user)
+
 	if err != nil {
 		log.Print(err.Error())
 		ctx.JSON(http.StatusConflict, gin.H{"error": "user already exists"})
@@ -39,13 +44,17 @@ func (uc *UserController) Register(ctx *gin.Context) {
 }
 
 func (uc *UserController) Login(ctx *gin.Context) {
+
 	var user model.UserLogin
+
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		log.Print(err.Error())
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
+
 	userResponse, token, err := uc.UserService.Login(&user)
+
 	if err != nil {
 		log.Print(err.Error())
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
@@ -64,12 +73,12 @@ func (uc *UserController) Logout(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "Succesfully logged out"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Successfully logged out"})
 }
 
 func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {
 	userRoute := rg.Group("/users")
 	userRoute.POST("/register", uc.Register)
 	userRoute.POST("/login", uc.Login)
-	userRoute.POST("/logout", middleware.ValidateToken(uc.RedisService), uc.Logout)
+	userRoute.POST("/logout", uc.AuthMiddleware.ValidateToken(), uc.Logout)
 }
